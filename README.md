@@ -26,13 +26,50 @@ brew install coreutils  # for gshuf (macOS)
 Librosa is only for shallow fusion integrations. 
 
 ## Download Pubmed XML Files
-**Run:**
+<!-- ```zsh
+mkdir -p pubmed_files
+seq 1 100 | xargs -n1 -P 10 -I{} bash -c 'file=$(printf "pubmed25n%04d.xml.gz" {}); curl -o "pubmed_files/$file" "https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/$file"'
+``` -->
+
+**Step 1 (Download Data):** 
+
+Download all pubmed xml and md5 files in parallel (specify number of files you want valid range is 1-1274):
 ```zsh
 mkdir -p pubmed_files
-# {1..N}
-for i in {1..5}; do
-    file=$(printf "pubmed25n%04d.xml.gz" "$i")
-    curl -o "pubmed_files/$file" "https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/$file"
+seq 1 1274 | xargs -n1 -P 10 -I{} bash -c '
+  file=$(printf "pubmed25n%04d.xml.gz" {});
+  curl -sf -o "pubmed_files/$file" "https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/$file" &&
+  curl -sf -o "pubmed_files/$file.md5" "https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/$file.md5"
+'
+```
+
+**Step 2: (Validate Data)** 
+
+Compare the computed checksum with the expected one. If they match, the filename is logged in valid_files.txt
+```zsh
+for i in $(seq 1 1274); do
+  file=$(printf "pubmed25n%04d.xml.gz" "$i")
+  filepath="pubmed_files/$file"
+  md5file="$filepath.md5"
+
+  if [ ! -f "$filepath" ] || [ ! -f "$md5file" ]; then
+    echo "Skipping $file, or its md5 file, because it does not exist"
+    continue
+  fi
+
+  if command -v md5sum >/dev/null 2>&1; then
+    computed=$(md5sum "$filepath" | cut -d' ' -f1)
+  else
+    computed=$(md5 "$filepath" | cut -d' ' -f4)
+  fi
+
+  expected=$(awk -F'= ' '{print $2}' "$md5file")
+
+  if [ "$computed" = "$expected" ]; then
+    echo "$file" >> valid_files.txt
+  else
+    echo "MD5 mismatch for $file"
+  fi
 done
 ```
 Downloaded PubMed `.xml.gz` files in `pubmed_files/`.
@@ -40,22 +77,26 @@ Downloaded PubMed `.xml.gz` files in `pubmed_files/`.
 
 Run scripts in order:
 
-1. **Extract and shuffle abstracts**
+1. **Extract Abstracts**
 
 ```bash
-python scripts/01_load_and_shuffle.py
+python scripts/01_extract_parallel.py
 ```
 
-2. **Split train/test sets**
+2. **Shuffle Data**
 
 ```bash
-python scripts/02_split_train_test.py
+python scripts/02_shuffle_data.py
+```
+3. **Train Test Split**
+```bash
+python scripts/03_train_test_split.py
 ```
 
-3. **Tokenize and batch (train/test)**
+4. **Tokenize and batch (train/test)**
 
 ```bash
-python scripts/03_tokenize_and_batch.py
+python scripts/04_tokenize_and_batch.py
 ```
 
 prepared batches (`.pt`) will be in `processed_batches/train/` and `processed_batches/test/`.
