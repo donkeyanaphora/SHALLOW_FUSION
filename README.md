@@ -20,7 +20,7 @@ project_root/
 Install dependencies:
 
 ```bash
-pip install torch transformers tqdm datasets librosa
+pip install torch transformers tqdm datasets lxml librosa
 brew install coreutils  # for gshuf (macOS)
 ```
 Librosa is only for shallow fusion integrations. 
