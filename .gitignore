@@ -1,5 +1,5 @@
 .DS_Store
-processed_batches
-pubmed_files
-data
-staging
+processed_batches/
+pubmed_files/
+data/
+staging/
