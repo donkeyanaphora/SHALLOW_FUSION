@@ -14,16 +14,36 @@ project_root/
 ├── scripts/             # Data processing scripts
 └── notebooks/           # Notebooks for training and inference
 ```
+Below is a refined and more visually appealing version of your setup instructions:
+
+---
 
 ## Setup
 
-Install dependencies:
+### 1. Install Dependencies
 
+#### System Dependencies
+
+- **Linux:**
+  ```bash
+  apt-get install lftp
+  ```
+
+- **Mac:**
+  ```bash
+  brew install lftp
+  brew install coreutils
+  ```
+
+#### Python Dependencies (Cross-Platform)
+
+Install the required Python packages:
 ```bash
 pip install torch transformers tqdm datasets lxml librosa
-brew install coreutils  # for gshuf (macOS)
 ```
-Librosa is only for shallow fusion integrations. 
+
+> **Note:** *Librosa is only required for shallow fusion integrations.*
+
 
 ## Download Pubmed XML Files
 <!-- ```zsh
@@ -33,7 +53,12 @@ seq 1 100 | xargs -n1 -P 10 -I{} bash -c 'file=$(printf "pubmed25n%04d.xml.gz" {
 
 **Step 1 (Download Data):** 
 
-Download all pubmed xml and md5 files in parallel (specify number of files you want valid range is 1-1274):
+Donwload all pubmed xml and md5 zip files
+```zsh
+lftp -c "open ftp://ftp.ncbi.nlm.nih.gov/pubmed/baseline/; mirror --parallel=10 . pubmed_files"
+```
+
+<!-- Download all pubmed xml and md5 files in parallel (specify number of files you want valid range is 1-1274):
 ```zsh
 mkdir -p pubmed_files
 seq 1 1274 | xargs -n1 -P 10 -I{} bash -c '
@@ -41,7 +66,7 @@ seq 1 1274 | xargs -n1 -P 10 -I{} bash -c '
   curl -sf -o "pubmed_files/$file" "https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/$file" &&
   curl -sf -o "pubmed_files/$file.md5" "https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/$file.md5"
 '
-```
+``` -->
 
 **Step 2: (Validate Data)** 
 
