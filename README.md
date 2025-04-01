@@ -105,7 +105,7 @@ Run scripts in order:
 1. **Extract Abstracts**
 
 ```bash
-python scripts/01_extract_parallel.py
+python scripts/01_extract_batches.py
 ```
 
 2. **Shuffle Data**
