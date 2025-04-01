@@ -4,6 +4,8 @@ import os
 import json
 import glob
 from tqdm import tqdm
+import shutil
+import subprocess
 
 input_dir = "pubmed_files"
 os.makedirs("staging", exist_ok=True)
@@ -28,6 +30,22 @@ with open(output_jsonl, 'w', encoding='utf-8') as out_file:
         for abstract_text in pubmed_abstract_generator(file):
             out_file.write(json.dumps({"abstract": abstract_text}) + '\n')
 
+shuf_command = shutil.which('shuf') or shutil.which('gshuf')
+if shuf_command is None:
+    raise EnvironmentError(
+        "Neither 'shuf' nor 'gshuf' is available. Please install GNU coreutils on macOS or ensure shuf is available on Linux."
+    )
+
 print("Shuffling abstracts...")
-os.system(f'gshuf {output_jsonl} -o {shuffled_output_jsonl}')
-print("Shuffled file saved at:", shuffled_output_jsonl)
+try:
+    # Use subprocess.run to execute the shuffling command with error checking.
+    result = subprocess.run(
+        [shuf_command, output_jsonl, '-o', shuffled_output_jsonl],
+        check=True,
+        capture_output=True,
+        text=True
+    )
+    print("Shuffled file saved at:", shuffled_output_jsonl)
+except subprocess.CalledProcessError as e:
+    print("Error during shuffling:")
+    print(e.stderr)
