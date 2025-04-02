@@ -4,7 +4,7 @@ Simple, reproducible pipeline for preparing PubMed abstracts for language modeli
 Read about the motivation [**✨👉 HERE 👈✨**](ARTICLE.md)
 
 ## About the Data
-- [Landing](https://pubmed.ncbi.nlm.nih.gov)
+- [Home Page](https://pubmed.ncbi.nlm.nih.gov)
 - [/pubmed/README.txt](https://ftp.ncbi.nlm.nih.gov/pubmed/README.txt)
 - [/pubmed](https://ftp.ncbi.nlm.nih.gov/pubmed/)
 
@@ -51,10 +51,6 @@ pip install torch transformers tqdm datasets lxml librosa
 
 
 ## Download Pubmed XML Files
-<!-- ```zsh
-mkdir -p pubmed_files
-seq 1 100 | xargs -n1 -P 10 -I{} bash -c 'file=$(printf "pubmed25n%04d.xml.gz" {}); curl -o "pubmed_files/$file" "https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/$file"'
-``` -->
 
 - **Step 1 (Download Data):** 
 
@@ -62,16 +58,6 @@ seq 1 100 | xargs -n1 -P 10 -I{} bash -c 'file=$(printf "pubmed25n%04d.xml.gz" {
   ```zsh
   lftp -c "open ftp://ftp.ncbi.nlm.nih.gov/pubmed/baseline/; mirror --parallel=10 . pubmed_files"
   ```
-
-  <!-- Download all pubmed xml and md5 files in parallel (specify number of files you want valid range is 1-1274):
-  ```zsh
-  mkdir -p pubmed_files
-  seq 1 1274 | xargs -n1 -P 10 -I{} bash -c '
-    file=$(printf "pubmed25n%04d.xml.gz" {});
-    curl -sf -o "pubmed_files/$file" "https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/$file" &&
-    curl -sf -o "pubmed_files/$file.md5" "https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/$file.md5"
-  '
-  ``` -->
 
 - **Step 2: (Validate Data)** 
 

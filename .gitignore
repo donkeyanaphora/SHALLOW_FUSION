@@ -5,5 +5,6 @@ pubmed_files/
 data/
 staging/
 notebookes/.DS_Store
+notebooks/training_state.pt
 scripts/.DS_Store 
 error.log
