@@ -3,7 +3,7 @@ import subprocess
 import shutil
 import random
 
-def make_seedfile(seed: int, seedfile_path: str, size_in_bytes: int = 10_000_000):
+def make_seedfile(seed: int, seedfile_path: str, size_in_bytes: int = 100_000_000):
     # No need to make 'staging/' if we know it already exists:
     # dir_name = os.path.dirname(seedfile_path)
     # if dir_name:
