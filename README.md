@@ -3,6 +3,11 @@
 Simple, reproducible pipeline for preparing PubMed abstracts for language modeling, later integrated with shallow fusion for downstream ASR tasks.  
 Read about the motivation [**✨👉 HERE 👈✨**](ARTICLE.md)
 
+## About the Data
+- [Landing](https://pubmed.ncbi.nlm.nih.gov)
+- [/pubmed/README.txt](https://ftp.ncbi.nlm.nih.gov/pubmed/README.txt)
+- [/pubmed](https://ftp.ncbi.nlm.nih.gov/pubmed/)
+
 ## Project Structure
 
 ```
@@ -113,7 +118,7 @@ Run scripts in order:
     ```bash
     python scripts/02_shuffle_data.py
     ```
-    
+
 3. **Train Test Split**
 
     ```bash
