@@ -6,90 +6,82 @@ import os
 os.makedirs("processed_batches/train", exist_ok=True)
 os.makedirs("processed_batches/test", exist_ok=True)
 
-def abstract_batch_generator(jsonl_file, batch_size):
-    with open(jsonl_file, 'r', encoding='utf-8') as f:
-        batch = []
+def batch_generator(file_path, tokenizer, batch_size=50, token_limit=1024, return_labels=False):
+    
+    input_window = []
+    mask_window = []
+    # We need an extra token for the shifting operation.
+    window_size = token_limit * batch_size + 1
+
+    with open(file_path, 'r', encoding='utf-8') as f:
         for line in f:
-            record = json.loads(line)
-            batch.append(record["abstract"])
-            if len(batch) == batch_size:
-                yield batch
-                batch = []
-        if batch:
-            yield batch
+            data = json.loads(line)
 
-def save_torch_batch(input_ids, attention_masks, labels, filename):
-    torch.save({
-        "input_ids": torch.tensor(input_ids, dtype=torch.long),
-        "attention_mask": torch.tensor(attention_masks, dtype=torch.long),
-        "labels": torch.tensor(labels, dtype=torch.long)
-    }, filename)
+            tokenized = tokenizer(data['abstract'])
+            input_ids = tokenized['input_ids'] + [tokenizer.eos_token_id]
+            attention_mask = tokenized['attention_mask'] + [1]
 
-def tokenize_batch(tokenizer, token_limit, file_in, output_dir, batch_size=1000):
-    data_stream = abstract_batch_generator(file_in, batch_size)
-    eos_token_id = tokenizer.eos_token_id
+            input_window.extend(input_ids)
+            mask_window.extend(attention_mask)
+            
+            while len(input_window) >= window_size and len(mask_window) >= window_size:
+                batch_input = input_window[:window_size]
+                batch_mask = mask_window[:window_size]
 
-    for batch_idx, batch in enumerate(data_stream):
-        # as stupid as this feels since we have to iterate over them again to end EOS_TOKEN 
-        # it is faster to bath tokenize and then loop...
-        tokenized = tokenizer(batch, add_special_tokens=False, padding=False, truncation=False)
-        chunked_ids, chunked_attention = [], []
-        buffer = []
+                input_window = input_window[window_size:]
+                mask_window = mask_window[window_size:]
+                
+                input_tensor = torch.tensor(batch_input, dtype=torch.long)
+                mask_tensor = torch.tensor(batch_mask, dtype=torch.long)
+                
+                x = input_tensor[:-1].view(batch_size, token_limit)
+                attn = mask_tensor[:-1].view(batch_size, token_limit)
+                
+                if return_labels:
+                    y = input_tensor[1:].view(batch_size, token_limit)
+                    yield {'input_ids': x, 'attention_mask': attn, 'labels':y},
+                else:
+                    yield {'input_ids': x, 'attention_mask': attn}
 
-        # add EOS_ID to end of text this will act as separator when we aggregate abstracts to token limit
-        for input_ids in tokenized["input_ids"]:
-            # Add EOS token as a delimiter
-            input_ids.append(eos_token_id)
-            buffer.extend(input_ids)
+    # throw away singular leftover (should be singular)
+    if input_window:
+        print("Incomplete batch remaining; dropping remaining tokens.")
 
-            # extract valid chunk segment of len token_limit
-            while len(buffer) >= token_limit:
-                segment = buffer[:token_limit]
-                buffer = buffer[token_limit:]
-                chunked_ids.append(segment)
-                attention_mask = [1]*token_limit
-                chunked_attention.append(attention_mask)
-
-        # handle leftover text (this should ensure we only have one observation < token_limit)
-        if buffer:
-            pad_len = token_limit - len(buffer)
-            segment = buffer + [eos_token_id]*pad_len
-            chunked_ids.append(segment)
-            attention_mask = [1]*len(buffer) + [0]*pad_len
-            chunked_attention.append(attention_mask)
-            buffer = []
-
-        # convert to PT tensors & save batches as .pt files
-        out_file = f"{output_dir}/batch_{batch_idx:04d}.pt"
-        save_torch_batch(chunked_ids, chunked_attention, chunked_ids, out_file)
-        print(f"Saved {out_file}")
-
-
-tokenizer = AutoTokenizer.from_pretrained("gpt2", use_fast=True)
-token_limit = 1024
 
 train_path = 'data/train.jsonl'
 test_path = 'data/test.jsonl'
 
-train_out = "processed_batches/train"
-test_out = "processed_batches/test"
+train_out_dir = "processed_batches/train"
+test_out_dir = "processed_batches/test"
 
-# Run separately for train
+tokenizer = AutoTokenizer.from_pretrained("gpt2", use_fast=True)
+token_limit = 1024
+batch_size = 16
+
+train_generator = batch_generator(
+    file_path=train_path, 
+    tokenizer=tokenizer, 
+    batch_size=batch_size, 
+    token_limit=token_limit, 
+    return_labels=False
+)
+
+test_generator = batch_generator(
+    file_path=test_path, 
+    tokenizer=tokenizer, 
+    batch_size=batch_size, 
+    token_limit=token_limit, 
+    return_labels=False
+)
+
 print('-'*50 + 'TRAIN' + '-'*50)
-tokenize_batch(
-    tokenizer=tokenizer, 
-    token_limit=token_limit,
-    file_in=train_path, 
-    output_dir=train_out
-    )
+for idx, item in enumerate(train_generator):
+    out_train_file = f"{train_out_dir}/batch_{idx:04d}.pt"
+    torch.save(item, out_train_file)
+    print(f"Saved {out_train_file}")
 
-# and for test sets
 print('-'*50 + 'TEST' + '-'*50)
-tokenize_batch(
-    tokenizer=tokenizer, 
-    token_limit=token_limit,
-    file_in=test_path, 
-    output_dir=test_out
-    )
-print('-'*50 + 'COMPLETED' + '-'*50)
-print(f'files saved to:\n{train_out}\n{test_out}')
+for idx, item in enumerate(test_generator):
+    out_test_file = f"{test_out_dir}/batch_{idx:04d}.pt"
+    torch.save(item, out_test_file)
+    print(f"Saved {out_test_file}")
