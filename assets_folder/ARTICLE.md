@@ -55,7 +55,7 @@ The idea is that the ASR model understands phonetics and language in a general s
 #### Process Diagram:
 
 <center>
-  <img src="assets_folder/image.png" alt="diagram">
+  <img src="image.png" alt="diagram">
 </center>
 
 <!-- ![diagram](data/image.png) -->
