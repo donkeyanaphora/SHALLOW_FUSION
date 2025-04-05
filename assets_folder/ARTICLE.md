@@ -172,7 +172,8 @@ This demonstrates how **domain-aware shallow fusion** can significantly improve 
 
 * [On Using Monolingual Corpora in Neural Machine Translation](https://arxiv.org/pdf/1503.03535)
 
+* [Language Models are Unsupervised Multitask Learners](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf)
 
-## Illustrative Code
-[Shallow Fusion using Whisper and GPT2](https://colab.research.google.com/drive/1D6cxd1brWWuKvmCbT18eCT1RmV3EK1yf?usp=sharing)
+* [Language Models are Few-Shot Learners](https://arxiv.org/pdf/2005.14165)
+
 
