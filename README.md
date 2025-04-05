@@ -1,7 +1,7 @@
 # PubMed Abstracts LM Pipeline
 
 Simple, reproducible pipeline for preparing PubMed abstracts for language modeling, later integrated with shallow fusion for downstream ASR tasks.  
-Read about the motivation [**✨👉 HERE 👈✨**](assets_folder/ARTICLE.html)
+Read about the motivation [**✨👉 HERE 👈✨**](https://donkeyanaphora.github.io/articles/article1/shallow_fusion.html)
 
 ## About the Data
 - [Home Page](https://pubmed.ncbi.nlm.nih.gov)
