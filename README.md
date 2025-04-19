@@ -119,9 +119,14 @@ Run scripts in order:
 
     prepared batches (`.pt`) will be in `processed_batches/train/` and `processed_batches/test/`.
 
-## Fine Tuning
+## Fine Tuning Example
 
 - [fine tuning notebook](notebooks/train_model.ipynb)
 
+## Models Tuned with this Pipeline
+- [GPT2-small](https://huggingface.co/cwestnedge/gpt2-small-pubmed)
+- [GPT2-medium](https://huggingface.co/cwestnedge/gpt2-small-pubmed)
+- [GPT2-large](https://huggingface.co/cwestnedge/gpt2-small-pubmed)
+
 ## Inference + Shallow Fusion
-- [inference with fusion notebook](notebooks/train_model.ipynb)
+- [shallow fusion demo](notebooks/shallow_fusion_demo.ipynb)
