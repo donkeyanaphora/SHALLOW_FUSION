@@ -5,7 +5,7 @@ shuffled_file = "data/shuffled_pubmed_abstracts.jsonl"
 train_file = "data/train.jsonl"
 test_file = "data/test.jsonl"
 
-test_ratio = 0.25
+test_ratio = 0.01
 random.seed(42)
 
 print("Splitting into train and test:", shuffled_file)
