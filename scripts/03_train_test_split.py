@@ -5,6 +5,7 @@ shuffled_file = "data/shuffled_pubmed_abstracts.jsonl"
 train_file = "data/train.jsonl"
 test_file = "data/test.jsonl"
 
+# ratio should be fine for extremely large datasets like pubmed but adjust accordingly
 test_ratio = 0.01
 random.seed(42)
 
