@@ -1,7 +1,7 @@
 # PubMed Abstracts LM Pipeline
 
 Simple, reproducible pipeline for preparing PubMed abstracts for language modeling, later integrated with shallow fusion for downstream ASR tasks.  
-Read about the motivation [**✨👉 HERE 👈✨**](https://donkeyanaphora.github.io/articles/article1/shallow_fusion.html)
+Read about the motivation [**✨👉 HERE 👈✨**](https://donkeyanaphora.github.io/articles/article1/index.html)
 
 ## About the Data
 - [Home Page](https://pubmed.ncbi.nlm.nih.gov)
@@ -12,10 +12,10 @@ Read about the motivation [**✨👉 HERE 👈✨**](https://donkeyanaphora.gith
 
 ```
 project_root/
-├── pubmed_files/        # PubMed XML files (.xml.gz)
-├── staging/             # Intermediate JSONL files
-├── data/                # train/test datasets (JSONL)
-├── processed_batches/   # tokenized batches for train/test (.pt)
+├── pubmed_files/        # PubMed XML files (.xml.gz) (created)
+├── staging/             # Intermediate JSONL files (created)
+├── data/                # train/test datasets (JSONL) (created)
+├── processed_batches/   # tokenized batches for train/test (.pt) (created)
 ├── scripts/             # Data processing scripts
 └── notebooks/           # Notebooks for training and inference
 ```
