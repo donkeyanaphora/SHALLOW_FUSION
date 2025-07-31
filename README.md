@@ -1,7 +1,9 @@
 # PubMed Abstracts LM Pipeline
 
 Simple, reproducible pipeline for preparing PubMed abstracts for language modeling, later integrated with shallow fusion for downstream ASR tasks.  
-Read about the motivation [**✨👉 HERE 👈✨**](https://donkeyanaphora.github.io/articles/article1/index.html)
+
+Read about the motivation [**here**](https://donkeyanaphora.github.io/articles/article1/index.html)
+
 
 ## About the Data
 - [Home Page](https://pubmed.ncbi.nlm.nih.gov)
@@ -17,7 +19,7 @@ project_root/
 ├── data/                # train/test datasets (JSONL) (created)
 ├── processed_batches/   # tokenized batches for train/test (.pt) (created)
 ├── scripts/             # Data processing scripts
-└── notebooks/           # Notebooks for training and inference
+└── notebooks/           # Notebooks for training/eval
 ```
 Below is a refined and more visually appealing version of your setup instructions:
 
@@ -119,14 +121,15 @@ Run scripts in order:
 
     prepared batches (`.pt`) will be in `processed_batches/train/` and `processed_batches/test/`.
 
-## Fine Tuning Example
+## Fine-Tuning Example
 
-- [fine tuning notebook](notebooks/train_model.ipynb)
+📓 [Fine-tuning notebook](notebooks/train_model.ipynb)
 
-## Models Tuned with this Pipeline
-- [GPT2-small](https://huggingface.co/cwestnedge/gpt2-small-pubmed)
-- [GPT2-medium](https://huggingface.co/cwestnedge/gpt2-small-pubmed)
-- [GPT2-large](https://huggingface.co/cwestnedge/gpt2-small-pubmed)
+## Models Trained with this Pipeline
+
+[![GPT2-small](https://img.shields.io/badge/🤗-GPT2--small-orange)](https://huggingface.co/cwestnedge/gpt2-small-pubmed) [![GPT2-medium](https://img.shields.io/badge/🤗-GPT2--medium-orange)](https://huggingface.co/cwestnedge/gpt2-medium-pubmed) [![GPT2-large](https://img.shields.io/badge/🤗-GPT2--large-orange)](https://huggingface.co/cwestnedge/gpt2-large-pubmed)
 
 ## Inference + Shallow Fusion
-- [shallow fusion demo](notebooks/shallow_fusion_demo.ipynb)
+For the complete shallow fusion implementation:
+
+[![View on GitHub](https://img.shields.io/badge/View%20on-GitHub-181717?logo=github)](https://github.com/donkeyanaphora/SHALLOW_FUSION)
