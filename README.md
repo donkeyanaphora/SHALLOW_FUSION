@@ -132,4 +132,5 @@ Run scripts in order:
 ## Inference + Shallow Fusion
 For the complete shallow fusion implementation:
 
-[![View on GitHub](https://img.shields.io/badge/View%20on-GitHub-181717?logo=github)](https://github.com/donkeyanaphora/SHALLOW_FUSION)
+[![View on GitHub](https://img.shields.io/badge/View%20on-GitHub-181717?logo=github)](https://github.com/donkeyanaphora/SF_EVAL)
+
